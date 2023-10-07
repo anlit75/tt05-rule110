@@ -12,25 +12,22 @@ module tt_um_rule110_an(
     input  wire       rst_n     // reset_n - low to reset
 ); 
 
-  	// Set all bidirectional pins as outputs
-    assign uio_oe = 8'b1;
+  // Set all bidirectional pins as outputs
+  assign uio_oe = 8'b1;
   
- 	 // Initialize unused inputs of the BIDIRECTIONAL path to 0 for posterity (otherwise Yosys fails)
-    assign uio_in = 8'b0;
-  
-//   	wire [15:0] data, left, right;
-//   	reg [15:0] q;
+  // wire [15:0] data, left, right;
+  // reg [15:0] q;
 
-//     assign data = 16'b0000000000000001;  
-//     assign left = {q[0], q[15:1]};
-//     assign right = {q[14:0], q[15]};
-  
-//   	assign {uo_out, uio_out} = q;
-        
-//     always @(posedge clk) begin
-//       if (!rst_n) q <= data;
-//         else q <= (left & q & ~right) | (~left & q) | (~q & right);
-//     end
+  // assign data = 16'b0000000000000001;  
+  // assign left = {q[0], q[15:1]};
+  // assign right = {q[14:0], q[15]};
+
+  // assign {uo_out, uio_out} = q;
+      
+  // always @(posedge clk) begin
+  //   if (!rst_n) q <= data;
+  //     else q <= (left & q & ~right) | (~left & q) | (~q & right);
+  // end
   
   parameter LOAD=0;	// load data
   parameter STEP=1;	// step into next generation
@@ -56,11 +53,11 @@ module tt_um_rule110_an(
   
   always @(*) begin
     if (!rst_n) rule_in = 256'b0;
-//     else if (state == LOAD) rule_in = 256'b10001110111000100110111110001001101111100010011011111000100;
     else if (state == LOAD) rule_in = ui_in;
     else if (state == UPDATE) rule_in = rule_out;
     else rule_in = rule_in;
   end
+  // rule_in = 256'b10001110111000100110111110001001101111100010011011111000100;
   
   assign {uo_out, uio_out} = (state >= S0 && state <= S15) ? rule_out[16*(18-state)-1 -: 16] : {uo_out, uio_out};
   
@@ -79,9 +76,9 @@ module rule110(
     input  wire [255:0] in,
     output wire [255:0] out,
     
-    input  wire 	  ena,  
-    input  wire       clk,
-    input  wire       rst
+    input  wire  ena,  
+    input  wire  clk,
+    input  wire  rst
 ); 
 
     wire [255:0] left, right;
