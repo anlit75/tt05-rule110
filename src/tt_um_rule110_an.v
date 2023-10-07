@@ -2,9 +2,9 @@
 
 module tt_um_rule110_an(
   	input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
-    output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 output pin
+    output reg  [7:0] uo_out,   // Dedicated outputs - connected to the 7 output pin
     input  wire [7:0] uio_in,   // IOs: Bidirectional Input path
-    output wire [7:0] uio_out,  // IOs: Bidirectional Output path
+    output reg  [7:0] uio_out,  // IOs: Bidirectional Output path
     output wire [7:0] uio_oe,   // IOs: Bidirectional Enable path (active high: 0=input, 1=output)
     
     input  wire       ena,      // will go high when the design is enabled
@@ -18,7 +18,7 @@ module tt_um_rule110_an(
     // wire [15:0] data, left, right;
     // reg [15:0] q;
 
-    // assign data = 16'b0000000000000001;  
+    // assign data = 16'b1;  
     // assign left = {q[0], q[15:1]};
     // assign right = {q[14:0], q[15]};
 
@@ -36,8 +36,6 @@ module tt_um_rule110_an(
 
     reg [4:0] state, next_state;
     reg [255:0] rule_in, rule_out;
-
-    wire [15:0] t_out;
 
     always @(posedge clk) begin
       if (!rst_n) state <= LOAD;
@@ -61,8 +59,10 @@ module tt_um_rule110_an(
     end
     // rule_in = 256'b10001110111000100110111110001001101111100010011011111000100;
 
-    assign t_out = {uo_out, uio_out};
-    assign {uo_out, uio_out} = (state >= S0 && state <= S15) ? rule_out[16*(18-state)-1 -: 16] : t_out;
+  	always @(*) begin
+      if ((state >= S0 && state <= S15))
+      	{uo_out, uio_out} = rule_out[16*(18-state)-1 -: 16];
+    end
 
     rule110 rule110(
       .in(rule_in),
@@ -77,18 +77,19 @@ endmodule
 
 module rule110(
     input  wire [255:0] in,
-    output wire [255:0] out,
+    output reg  [255:0] out,
     
     input  wire  ena,  
     input  wire  clk,
     input  wire  rst
 ); 
 
-  	wire [255:0] left, right, t_out;
+  	wire [255:0] left, right;
 
     assign left =  {1'b0, in[255:1]};
     assign right = {in[254:0], 1'b0};
         
-  	assign t_out = out;
-  	assign out = ena ? (left & in & ~right) | (~left & in) | (~in & right) : t_out;
+    always @(*)
+      if (ena)
+      	out = (left & in & ~right) | (~left & in) | (~in & right);
 endmodule
