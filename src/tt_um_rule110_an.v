@@ -1,6 +1,6 @@
 `default_nettype none
 
-module tt_um_rule110(
+module tt_um_rule110_an(
   	input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
     output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 output pin
     input  wire [7:0] uio_in,   // IOs: Bidirectional Input path
