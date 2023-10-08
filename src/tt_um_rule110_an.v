@@ -15,27 +15,14 @@ module tt_um_rule110_an(
     // Set all bidirectional pins as outputs
     assign uio_oe = 8'b1;
 
-    // wire [15:0] data, left, right;
-    // reg [15:0] q;
-
-    // assign data = 16'b1;  
-    // assign left = {q[0], q[15:1]};
-    // assign right = {q[14:0], q[15]};
-
-    // assign {uo_out, uio_out} = q;
-
-    // always @(posedge clk) begin
-    //   if (!rst_n) q <= data;
-    //     else q <= (left & q & ~right) | (~left & q) | (~q & right);
-    // end
-
     parameter LOAD=0;	// load data
     parameter STEP=1;	// step into next generation
     parameter S0=2, S15=17;	// 16 cycles output, each cycle output 16 bits
     parameter UPDATE=18;		// update rule_in
 
-    reg [4:0] state, next_state;
-    reg [255:0] rule_in, rule_out;
+    reg  [4:0] state, next_state;
+    reg  [255:0] rule_in;
+  	wire [255:0] rule_out;
 
     always @(posedge clk) begin
       if (!rst_n) state <= LOAD;
